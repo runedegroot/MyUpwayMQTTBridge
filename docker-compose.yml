@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  myupwaymqttbridge:
+    image: ${DOCKER_REGISTRY-}myupwaymqttbridge
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=heat_pump
+      - MQTT_DISCOVERY_PREFIX=homeassistant
+      - UPDATE_INTERVAL=5
+      - MYUPWAY_USERNAME=[EMAIL]
+      - MYUPWAY_PASSWORD=[PASSWORD]
+      - MYUPWAY_SYSTEM_ID=[SYSTEMID]
+    volumes:   
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    restart: on-failure
+    ports:
+      - 1883:1883
+    volumes:
+      - ./mosquitto_config:/mosquitto/config
